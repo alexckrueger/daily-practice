@@ -93,3 +93,6 @@ def find_longest_word(string):
 
 
 print(find_longest_word("Hello my most dear friend, Computaladora and Python!"))
+
+example = {"hello": "world", "some": 1, 5: 4.5, 1.43: 90}
+print(example)
