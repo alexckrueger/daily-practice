@@ -1,65 +1,3 @@
-# class Player
-#   attr_accessor :name
-
-#   def initialize(params)
-#     @name = params[:name]
-#   end
-# end
-
-# class Throw
-#   attr_accessor :value
-
-#   def initialize(value)
-#     @value = value
-#   end
-
-# end
-
-# class Game
-#   attr_accessor :scores, :player
-
-#   def initialize(player)
-#     @player = player.name
-#     @scores = []
-#   end
-
-#   def five
-#     scores << Throw.new(5)
-#     end_game
-#   end
-
-#   def three
-#     scores << Throw.new(3)
-#     end_game
-#   end
-
-#   def one
-#     scores << Throw.new(1)
-#     end_game
-#   end
-
-#   def drop
-#     scores << Throw.new(0)
-#     end_game
-#   end
-
-#   def total_score
-#     total = 0
-#     scores.each do |score|
-#       total += score.value
-#     end
-#     return total
-#   end
-
-#   def end_game
-#     if scores.length == 5
-#       puts "Game Over!"
-#       puts "#{player}'s final score is: #{total_score}"
-#     end
-#   end
-  
-# end
-
 class Tournament
   
 end
@@ -74,11 +12,71 @@ class Player
 end
 
 class Match
-  attr_accessor
+  attr_accessor :player_1, :player_2, :best_of, :completed_games, :winner
 
-  def initialize(params)
-    player_1 = params[:player_1]
-    player_2 = params[:player_2]
+  def initialize(params, best_of)
+    @player_1 = params[:player_1]
+    @player_2 = params[:player_2]
+    @best_of = best_of
+    @completed_games = []
+    @winner = ""
+    new_game
+  end
+
+  def new_game
+    # Creates a new game instance for each player
+    player_1_game = Game.new({player: player_1})
+    player_2_game = Game.new({player: player_2})
+    puts "New game has begun!"
+
+    # Regular (small hatchet) throws for first 5
+    while player_1_game.throw_count < 5 && player_2_game.throw_count < 5
+      puts "What did #{player_1.name} score?"
+      player_1_game.throw({points: gets.chomp.to_i})
+      puts "What did #{player_2.name} score?"
+      player_2_game.throw({points: gets.chomp.to_i})
+    end
+
+    # Check for tiebreaker after 3 throws. If true, we go to big axe
+    if player_1_game.score == player_2_game.score
+      puts "BIG AXE"
+      while player_1_game.score == player_2_game.score
+        puts "What did #{player_1.name} score?"
+        player_1_game.throw({points: gets.chomp.to_i, big_axe: true})
+        puts "What did #{player_2.name} score?"
+        player_2_game.throw({points: gets.chomp.to_i, big_axe: true})
+      end
+    end
+
+    puts "Final scores:"
+    puts "#{player_1.name} has #{player_1_game.score} points"
+    puts "#{player_2.name} has #{player_2_game.score} points"
+
+    # Declare winner
+    if player_1_game.score > player_2_game.score # Player 1 wins
+      puts "#{player_1.name} wins the game!"
+      game_win(player_1)
+    elsif player_2_game.score > player_1_game.score # Player 2 wins
+      puts "#{player_2.name} wins the game!"
+      game_win(player_2)
+    end
+  end
+
+  def game_win(player) # takes in either player_1 or player_2 as parameter. Keeps track of who wins what games
+    completed_games << player
+    win_condition # checks to see if either player wins the match
+  end
+
+  def win_condition  
+    if completed_games.count(player_1) == best_of/2 + 1 # player 1 wins
+      puts "#{player_1.name} wins the match"
+      @winner = player_1 
+    elsif completed_games.count(player_2) == best_of/2 + 1 # player 2 wins
+      puts "#{player_2.name} wins the match"
+      @winner = player_2
+    else
+      new_game # If neither player has won yet, automatically starts a new game
+    end
   end
   
 end
@@ -90,7 +88,7 @@ class Game
     @throw_count = 0
     @score = 0
     @throws = []
-    @player_name = params[:player_name]
+    @player_name = params[:player]
   end
 
   def throw(params)
@@ -122,6 +120,8 @@ class Throw
   
 end
 
-game = Game.new({player_name: "Alex"})
-player = Player.new({name: "Alex"})
-p player.name
+alex = Player.new({name: "Alex"})
+doug = Player.new({name: "Doug"})
+
+match = Match.new({player_1: alex, player_2: doug}, 3)
+p match.winner
