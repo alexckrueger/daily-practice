@@ -1,5 +1,6 @@
 require 'rspec'
 
+# https://github.com/uplift-delivery/katas/tree/main/string-calculator
 # 1. Create a simple String calculator with the below method signature that takes in a string of up to two comma seperated numbers and returns the sum of those numbers.
 # Allow the Add method to handle new lines between numbers (instead of commas).
 
