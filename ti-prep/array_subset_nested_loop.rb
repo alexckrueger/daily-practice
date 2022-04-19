@@ -27,4 +27,3 @@ def array_subset(mother_array, child_array)
 end
 
 p array_subset([1, 2, 3, 4, 5, 6], [6, 3, 3])
-
