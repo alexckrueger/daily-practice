@@ -19,5 +19,5 @@ def bracket_names(round):
 rounds = ["Upper Bracket Quarter-Finals", "Upper Bracket Semi-Finals", "Upper Bracket Final",
           "Lower Bracket Quarter-Finals", "Lower Bracket Semi-Finals", "Lower Bracket Final", "Grand Finals"]
 
-correct_rounds = map(bracket_names, rounds)
-print(list(correct_rounds))
+correct_rounds = list(map(bracket_names, rounds))
+print(correct_rounds)
